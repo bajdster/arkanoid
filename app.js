@@ -119,11 +119,6 @@ function collisionCheck()
     function padCollision()
     {
         if(ballLeft<padLeft+150 && ballLeft>padLeft-150 && parseInt(pad.style.bottom) == (parseInt(ball.style.bottom)))
-        //zakombinowac z tym, polowa dlugosci pada to jego style.left
-        //!!!!!!!!!!!!!!!!
-        //nie dodaje ani nie odejmuje 150 do pad.style.left...dlatego warunek nie działa
-        //wtf
-        //px w ball.style.bottom i pad.style.bottom zle oddziaływały na warunek
         {
             clearInterval(movingInterval)
             isCollision = true;
@@ -177,46 +172,3 @@ window.addEventListener("keydown", ballMove);
 
 
 
-//huge problem with moving element
-
-//problem when ball is released it reacts on movement of pad
-
-
-// window.addEventListener("load", createCells)
-// function createCells()
-// {
-//     for(let i = 0; i<=25;i++)
-//     {
-//         let cell  = document.createElement("div")
-//         cell.classList.add("cell")
-//         cells.append(cell)
-//     }
-// }
-
-
-
-            // cell.forEach(el=>
-            //     {
-            //         console.log(ball.getBoundingClientRect().top)
-            //         console.log(cell[24].getBoundingClientRect().bottom)
-            //     })
-
-            //     if(ball.getBoundingClientRect().top<=cell[24].getBoundingClientRect().bottom)
-            //     {
-            //         console.log("yup")
-            //     }
-                
-                // console.log(cell[0].style.bottom)
-
-
-                // if(ball.getBoundingClientRect().right>=gameRightPos)
-            //     {
-            //         ball.style.left = parseInt(ball.style.left) -20+"px"
-            //     }
-            // else
-            // {
-            //     ball.style.left = parseInt(ball.style.left)+ 20+"px"
-            // }
-
-
-//can not game over 
