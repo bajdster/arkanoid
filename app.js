@@ -15,7 +15,6 @@ ball.style.bottom = "80px";
 ball.style.left = "450px";
 
 
-
 let padMoveAmount = 10;
 let ballMoveAmountY = 10;
 let ballMoveAmountX = 10;
@@ -72,6 +71,7 @@ function movePad(e)
 
 function ballMove(e)
 {
+
     switch(e.key)
     {
         case " ":
@@ -88,8 +88,8 @@ function ballMove(e)
 function collisionCheck()
 {
     let ballLeft = parseInt(ball.style.left)
-    let ballBottom = parseInt(ball.style.bottom)
     let padLeft = parseInt(pad.style.left) 
+
 
     function wallCollision()
     {
@@ -135,13 +135,21 @@ function collisionCheck()
 
     function cellCollision()
     {
+
+        
         cellCoords.forEach(coord =>
             {
-                if(ballLeft == coord.left && ballBottom == coord.bottom)
+                if(ball.getBoundingClientRect().x >= coord.left && ball.getBoundingClientRect().x <= coord.right && ball.getBoundingClientRect().y >=  coord.top && ball.getBoundingClientRect().y <= coord.bottom && coord.hitted==false )
                 {
                     console.log(coord)
+                    coord.hitted = true;
+                    let current = cellCoords.indexOf(coord)
+                    console.log(cell[current])
+                    cell[current].style.opacity = 0;
+                    ballMoveAmountY = ballMoveAmountY * -1;
                 }
             })
+
     }
     
     wallCollision();
@@ -154,12 +162,12 @@ function collisionCheck()
 }
 
 
-
 function getCellsCoords()
 {
     cell.forEach(el=>
         {
-            cellCoords.push({"bottom": `${el.getBoundingClientRect().bottom}`,"left": `${el.getBoundingClientRect().left}`})
+            cellCoords.push({"bottom": `${el.getBoundingClientRect().bottom}`,"left": `${el.getBoundingClientRect().left}`, "top": `${el.getBoundingClientRect().top}`,
+            "right": `${el.getBoundingClientRect().right}`, "hitted": false})
         })
 
         console.log(cellCoords)
@@ -169,6 +177,5 @@ function getCellsCoords()
 window.addEventListener("load", getCellsCoords)
 window.addEventListener('keydown', movePad)
 window.addEventListener("keydown", ballMove);
-
 
 
