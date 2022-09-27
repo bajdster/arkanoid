@@ -2,6 +2,7 @@ const pad = document.querySelector(".pad")
 const game = document.querySelector("#game")
 const ball = document.querySelector(".ballContainer")
 const cells = document.querySelector(".cells");
+const ballImage = document.querySelector(".ballImage")
 
 const cell = document.querySelectorAll(".cell")
 const cellCoords = []
@@ -76,7 +77,12 @@ function ballMove(e)
     {
         case " ":
 
-        ballReleased = true;
+        //delay ballReleased for purpose of ball bouncing when reached pad, not its half
+        setTimeout(()=>
+        {
+            ballReleased = true;
+        }, 500)
+        
         movingInterval = setInterval(collisionCheck,gameSpeed)
         console.log("space")
         break;
@@ -118,7 +124,10 @@ function collisionCheck()
 
     function padCollision()
     {
-        if(ballLeft<padLeft+150 && ballLeft>padLeft-150 && parseInt(pad.style.bottom) == (parseInt(ball.style.bottom)))
+        if(ballLeft<padLeft+150 
+            && ballLeft>padLeft-150 
+            && pad.getBoundingClientRect().y == ball.getBoundingClientRect().bottom 
+            && ballReleased)
         {
             clearInterval(movingInterval)
             isCollision = true;
@@ -130,16 +139,23 @@ function collisionCheck()
         {
             ball.style.display = "none";
             clearInterval(movingInterval)
+            setTimeout(()=>
+            {
+                game.innerHTML = `<div class="gameOverTextLose">GAME OVER, YOU LOSE</div>`
+            },300) 
         }
     }
 
     function cellCollision()
     {
 
-        
         cellCoords.forEach(coord =>
             {
-                if(ball.getBoundingClientRect().x >= coord.left && ball.getBoundingClientRect().x <= coord.right && ball.getBoundingClientRect().y >=  coord.top && ball.getBoundingClientRect().y <= coord.bottom && coord.hitted==false )
+                if(ball.getBoundingClientRect().x >= coord.left 
+                && ball.getBoundingClientRect().x <= coord.right 
+                && ball.getBoundingClientRect().bottom >= coord.top 
+                && ball.getBoundingClientRect().top <= coord.bottom 
+                && coord.hitted==false)
                 {
                     console.log(coord)
                     coord.hitted = true;
@@ -149,12 +165,44 @@ function collisionCheck()
                     ballMoveAmountY = ballMoveAmountY * -1;
                 }
             })
+    }
 
+    function gameOverCheck()
+    {
+        if(cellCoords.every(cell=>cell.hitted==true))
+        {
+            clearInterval(movingInterval);
+            ball.style.display = "none"
+            setTimeout(()=>
+            {
+                game.innerHTML = `<div class="gameOverTextWin">GAME OVER, YOU WIN</div>`
+            },300)    
+        }
+    }
+
+    function gameSpeedChange()
+    {
+        let count = 0;
+        cellCoords.forEach(cell=>
+            {
+                if(cell.hitted == true)
+                {
+                    count++;
+                }
+            })
+        if(count == Math.floor(cell.length/2))
+        {
+            gameSpeed = 35;
+            ballImage.src = "fastball.png";
+            pad.style.backgroundColor = "#1c0197"
+        }
     }
     
     wallCollision();
     padCollision();
     cellCollision();
+    gameOverCheck();
+    gameSpeedChange(); 
     
     
     ball.style.bottom = parseInt(ball.style.bottom) + ballMoveAmountY +"px";
@@ -177,5 +225,5 @@ function getCellsCoords()
 window.addEventListener("load", getCellsCoords)
 window.addEventListener('keydown', movePad)
 window.addEventListener("keydown", ballMove);
-
+ 
 
